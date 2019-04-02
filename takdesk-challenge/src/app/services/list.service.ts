@@ -2,8 +2,10 @@ import { Injectable, isDevMode } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {Observable, of} from "rxjs";
 import { environment } from '../../environments/environment';
+import * as _ from 'lodash';
 
- import data from '../../data/apps.json';
+import data from '../../data/apps.json';
+
 
 @Injectable({
   providedIn: 'root'
@@ -22,10 +24,12 @@ export default class ListService {
         totalPages += 1
       }
 
+      let sortedData = this.sortByPlanPrice(data);
+
       let retrievePageData = {
         totalPages: totalPages,
-        total: data.length,
-        data: data.slice(startingIndex, environment.totalItemsPerPage)
+        total: sortedData.length,
+        data: sortedData.slice(startingIndex, environment.totalItemsPerPage)
       }
 
       return  of(retrievePageData);
@@ -35,7 +39,6 @@ export default class ListService {
       return this.http.get(`${apiURL}/list?page=${pageNumber}`);
     }
   }
-
 
   getAllCategories(): Observable<any>{
     if(isDevMode()){
@@ -47,6 +50,8 @@ export default class ListService {
           }
         })
       })
+
+      categoryList = _.sortBy(categoryList)
 
       return  of(categoryList);
     }
@@ -64,7 +69,9 @@ export default class ListService {
         data: []
       };
 
-      let elementsWithCategory = data.filter( elem => {
+      let sortedData = this.sortByPlanPrice(data);
+
+      let elementsWithCategory = sortedData.filter( elem => {
         let hasCategory = false;
         elem.categories.forEach(category => {
           if(categoryArray.includes(category)){
@@ -92,6 +99,18 @@ export default class ListService {
       let categoriesToURL = categoryArray.join('+').slice(0, -1);
       return this.http.get(`${apiURL}/list?page=${pageNumber}&categories=${categoriesToURL}`);
     }
+  }
+
+  private sortByPlanPrice(data): any{
+
+    let orderData = _.sortBy(data,[(elem)=> {
+      return _.sumBy(elem.subscriptions, plan => {
+        return plan.price
+      } )
+    }])
+
+    return orderData
+
   }
 
 }

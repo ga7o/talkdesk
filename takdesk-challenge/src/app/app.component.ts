@@ -9,6 +9,8 @@ import {ListService} from './services';
 export class AppComponent implements OnInit{
   title = 'takdesk-challenge';
 
+  categoriesList: any
+
   constructor(private _listService: ListService) {
 
   }
@@ -34,6 +36,7 @@ export class AppComponent implements OnInit{
       data => {
         console.log(`getAllCategories:`)
         console.log(data)
+        this.categoriesList = data
       },
       err => {
         console.log('Error loading categories')
