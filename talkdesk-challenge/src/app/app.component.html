@@ -4,20 +4,16 @@
       <app-categories-section
         [categoriesList]="categoriesList"
         [selected]="categoriesSelection"
-        (onSectionClick)="onSectionClickEvent($event)" >
+        (onCategorySelectionClick)="onCategorySelectionClickEvent($event)" >
       </app-categories-section>
     </div>
-
     <div class="col-9" >
       <app-applications-section
         [applicationsListData]="appsList"
         (pageChange)="onPageChangeEvent($event)"
         (searchChange)="onSearchChangeEvent($event)"
         >
-
       </app-applications-section>
-
     </div>
-
   </div>
 </div>

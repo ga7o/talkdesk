@@ -1,3 +1,13 @@
+/**
+ * ApplicationsSectionComponent
+ *
+ * The ApplicationsSectionComponent logic definition
+ *
+ * @file   application-section.component.component.ts
+ * @author ga7o
+ * @url https://github.com/ga7o
+ */
+
 import { Component, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 import {environment} from "../../../environments/environment";
 
@@ -21,9 +31,6 @@ export class ApplicationsSectionComponent implements OnChanges {
   constructor() { }
 
   ngOnChanges(): void  {
-    console.log('Input')
-    console.log(this.applicationsListData)
-
     this.applicationsList = this.applicationsListData.data
     this.totalElements = this.applicationsListData.total
     this.totalPages = this.applicationsListData.totalPages
@@ -31,7 +38,6 @@ export class ApplicationsSectionComponent implements OnChanges {
     this.pageSize = environment.totalItemsPerPage
 
   }
-
 
   onPageChange(pageNumber) {
     this.pageChange.emit({pageNumber: pageNumber})

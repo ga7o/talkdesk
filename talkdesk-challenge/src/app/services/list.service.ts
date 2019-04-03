@@ -1,3 +1,13 @@
+/**
+ * ListService.
+ *
+ * This file defines the service get list the applications to be displayed.
+ *
+ * @file   list.service.ts
+ * @author ga7o
+ * @url https://github.com/ga7o
+ */
+
 import { Injectable, isDevMode } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {Observable, of} from "rxjs";
@@ -12,11 +22,21 @@ import data from '../../data/apps.json';
 })
 export default class ListService {
 
+
+  /**
+   * The service constructor.
+   * @class ListService
+   */
   constructor(private http: HttpClient) { }
 
+
+  /**
+   * Get the all the data of a specific page .
+   * @param {number} pageNumber The page number.
+   * @return {object} The result is an object with the data, the total number of pages and elements.
+   */
   getData(pageNumber) : Observable<any>{
 
-    console.log('getData: ', pageNumber )
     if(isDevMode()){
       let startingIndex = pageNumber * environment.totalItemsPerPage - (environment.totalItemsPerPage );
 
@@ -42,6 +62,10 @@ export default class ListService {
     }
   }
 
+  /**
+   * Get the all existing categories in the data.
+   * @return {object} The result is an object all the existing categories.
+   */
   getAllCategories(): Observable<any>{
     if(isDevMode()){
       let categoryList = []
@@ -51,7 +75,7 @@ export default class ListService {
             categoryList.push(category)
           }
         })
-      })
+      });
 
       categoryList = _.sortBy(categoryList)
 
@@ -63,6 +87,12 @@ export default class ListService {
     }
   }
 
+  /**
+   * Get the filtered data of a specific categories group (array) on a specific page .
+   * @param {array} categoryArray The categories array list.
+   * @param {number} pageNumber The page number.
+   * @return {object} The result is an object with the data, the total number of pages and elements.
+   */
   filterByCategory(categoryArray, pageNumber) : Observable<any> {
     if(isDevMode()){
       let retrievePageData = {
@@ -104,10 +134,14 @@ export default class ListService {
     }
   }
 
+  /**
+   * Get the filtered data of a specific search term on a specific page .
+   * @param {string} searchTerm The search term.
+   * @param {number} pageNumber The page number.
+   * @return {object} The result is an object with the data, the total number of pages and elements.
+   */
   searchByTerm(searchTerm, pageNumber) : Observable<any>{
 
-    console.log('search term: ', searchTerm )
-    console.log('getData: ', pageNumber )
     if(isDevMode()){
       let startingIndex = pageNumber * environment.totalItemsPerPage - (environment.totalItemsPerPage );
 
@@ -133,6 +167,11 @@ export default class ListService {
     }
   }
 
+  /**
+   * Orders the data by the plan price
+   * @param {object} data The data to be order.
+   * @return {object} The result is an object with the data ordered by price plan
+   */
   private sortByPlanPrice(data): any{
 
     let orderData = _.sortBy(data,[(elem)=> {
@@ -145,6 +184,12 @@ export default class ListService {
 
   }
 
+  /**
+   * Filters the data by specific search term
+   * @param {object} data The data to be order.
+   * @param {string} searchTerm The search term.
+   * @return {object} The result is an object with the data filtered by a search term
+   */
   private filterByTerm(data, searchTerm): any {
 
     let elementsWithTerm = _.filter(this.sortByPlanPrice(data), (elem) => {

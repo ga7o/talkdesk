@@ -1,3 +1,14 @@
+/**
+ * CategoriesSectionComponent
+ *
+ * The CategoriesSectionComponent logic definition
+ *
+ * @file   categories-section.component.component.ts
+ * @author ga7o
+ * @url https://github.com/ga7o
+ */
+
+
 import {Component, OnChanges, Input, Output, EventEmitter} from '@angular/core';
 
 @Component({
@@ -11,19 +22,16 @@ export class CategoriesSectionComponent implements OnChanges {
 
   @Input()selected: any
 
-  @Output() onSectionClick: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onCategorySelectionClick: EventEmitter<any> = new EventEmitter<any>();
 
   constructor() { }
 
   ngOnChanges(): void  {
-    console.log('Input')
-    console.log(this.categoriesList)
+
   }
 
-
   selectCategory(category){
-    console.log('category-> ', category)
-    this.onSectionClick.emit({category: category})
+    this.onCategorySelectionClick.emit({category: category})
   }
 
 
