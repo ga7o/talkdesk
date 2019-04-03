@@ -1,8 +1,6 @@
-<div class="row">
+<div class="row header-row">
   <div class="col">
-    <p class="categoriesHeader">
-      Categories
-    </p>
+    <h4>Categories</h4>
   </div>
 </div>
 
@@ -10,7 +8,17 @@
   <div class="col">
 
     <div *ngFor="let category of categoriesList">
-      <p>{{category}}</p>
+      <button *ngIf="selected.includes(category)"
+        type="button" class="btn btn-primary btn-lg category-btn"
+        (click)="selectCategory(category)">
+        {{category}}
+      </button>
+      <button *ngIf="!selected.includes(category)"
+              type="button" class="btn btn-outline-primary btn-lg category-btn"
+              (click)="selectCategory(category)">
+        {{category}}
+      </button>
+      <br>
     </div>
   </div>
 </div>

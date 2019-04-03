@@ -1,11 +1,22 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-3" >
-      <app-categories-section [categoriesList]="categoriesList" ></app-categories-section>
+      <app-categories-section
+        [categoriesList]="categoriesList"
+        [selected]="categoriesSelection"
+        (onSectionClick)="onSectionClickEvent($event)" >
+      </app-categories-section>
     </div>
 
     <div class="col-9" >
-      Search
+      <app-applications-section
+        [applicationsListData]="appsList"
+        (pageChange)="onPageChangeEvent($event)"
+        (searchChange)="onSearchChangeEvent($event)"
+        >
+
+      </app-applications-section>
+
     </div>
 
   </div>

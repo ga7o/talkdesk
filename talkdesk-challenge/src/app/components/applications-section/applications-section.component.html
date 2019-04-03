@@ -1,3 +1,26 @@
-<p>
-  applications-section works!
-</p>
+<div class="row search-row">
+  <div class="col">
+    <input type="search" class="form-control"
+           id="exampleInputSearch"
+           (input)="onSearchChange($event)"
+           placeholder="🔍 Search">
+  </div>
+</div>
+<div class="row applications-row">
+  <div class="col">
+    <div class="applications-list">
+      <app-application-item *ngFor="let application of applicationsList"
+        [application]="application">
+      </app-application-item>
+    </div>
+    <div class="pagination-section">
+      <ngb-pagination
+        [(page)] = "currentPage"
+        [pageSize]="pageSize"
+        [collectionSize]="totalElements"
+        (pageChange)="onPageChange($event)"
+      >
+      </ngb-pagination>
+    </div>
+  </div>
+</div>

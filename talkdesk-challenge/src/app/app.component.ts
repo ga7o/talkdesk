@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ListService} from './services';
+import {el} from "@angular/platform-browser/testing/src/browser_util";
 
 @Component({
   selector: 'app-root',
@@ -11,31 +12,26 @@ export class AppComponent implements OnInit{
 
   categoriesList: any
 
+  appsList: any
+
+  searchValue: string
+
+  categoriesSelection: any = []
+
   constructor(private _listService: ListService) {
 
   }
 
   ngOnInit(): void {
-    this._listService.getData(1).subscribe(
-      data => {
 
-        console.log(`getData:`)
-        console.log(data)
-      },
-      err => {
-        console.log('Error loading list')
-      },
-      () => {
-        console.log('End of getting list')
-      }
-    )
-
+    // Loading the first elements of the list
+    this.getApplicationsListByPage(1)
 
     this._listService.getAllCategories()
       .subscribe(
       data => {
-        console.log(`getAllCategories:`)
-        console.log(data)
+        console.log(`getAllCategories:`);
+        console.log(data);
         this.categoriesList = data
       },
       err => {
@@ -45,12 +41,93 @@ export class AppComponent implements OnInit{
         console.log('End of getting categories')
       }
     )
-    let categories = ["Voice Analytics"]
+  }
 
-    this._listService.filterByCategory(categories, 1).subscribe(
+
+  onSectionClickEvent($event) {
+    alert('onSectionClick '+ $event.category )
+    let selectedCategory = $event.category
+
+    if(this.categoriesSelection.includes(selectedCategory)){
+      this.categoriesSelection = this.categoriesSelection.filter((elem) => {
+        return elem !== selectedCategory
+      })
+    }
+    else {
+      this.categoriesSelection.push(selectedCategory)
+    }
+    if( this.categoriesSelection.length > 0){
+      this.getApplicationsByCategory(this.categoriesSelection, 1)
+    }
+    else {
+      this.getApplicationsListByPage(1)
+    }
+
+  }
+
+  onPageChangeEvent($event) {
+    alert('onPageChangeEvent '+ $event.pageNumber)
+
+    if(this.searchValue ){
+      this.getApplicationBySearchTerm(this.searchValue, $event.pageNumber)
+    }
+    else if(this.categoriesSelection.length > 0) {
+      this.getApplicationsByCategory(this.categoriesSelection, $event.pageNumber)
+    }
+    else {
+      this.getApplicationsListByPage($event.pageNumber)
+    }
+  }
+
+  onSearchChangeEvent($event) {
+    console.log($event.searchValue)
+    this.searchValue =$event.searchValue
+    this.getApplicationBySearchTerm(this.searchValue, 1)
+  }
+
+  getApplicationsListByPage(pageNumber) {
+    this._listService.getData(pageNumber)
+      .subscribe(
+        data => {
+          console.log(`getData:`);
+          console.log(data);
+          this.appsList = data;
+        },
+        err => {
+          console.log('Error loading list')
+        },
+        () => {
+          console.log('End of getting list')
+        }
+      )
+  }
+
+  getApplicationBySearchTerm(searchValue, pageNumber) {
+
+    this._listService.searchByTerm(searchValue, pageNumber)
+      .subscribe(
+        data => {
+          console.log(`getData:`);
+          console.log(data);
+          this.appsList = data;
+        },
+        err => {
+          console.log('Error loading list')
+        },
+        () => {
+          console.log('End of getting list')
+        }
+      )
+
+
+  }
+
+  getApplicationsByCategory(categories, pageNumber) {
+    this._listService.filterByCategory(categories, pageNumber).subscribe(
       data => {
         console.log(`filterByCategory:`)
         console.log(data)
+        this.appsList = data
       },
       err => {
         console.log('Error loading filterByCategory')
@@ -59,7 +136,5 @@ export class AppComponent implements OnInit{
         console.log('End of getting filterByCategory')
       }
     )
-
   }
-
 }

@@ -16,6 +16,7 @@ export default class ListService {
 
   getData(pageNumber) : Observable<any>{
 
+    console.log('getData: ', pageNumber )
     if(isDevMode()){
       let startingIndex = pageNumber * environment.totalItemsPerPage - (environment.totalItemsPerPage );
 
@@ -27,9 +28,10 @@ export default class ListService {
       let sortedData = this.sortByPlanPrice(data);
 
       let retrievePageData = {
+        currentPage: pageNumber,
         totalPages: totalPages,
         total: sortedData.length,
-        data: sortedData.slice(startingIndex, environment.totalItemsPerPage)
+        data: sortedData.slice(startingIndex, startingIndex + environment.totalItemsPerPage)
       }
 
       return  of(retrievePageData);
@@ -66,6 +68,7 @@ export default class ListService {
       let retrievePageData = {
         total: 0,
         totalPages: 0,
+        currentPage:1,
         data: []
       };
 
@@ -87,10 +90,10 @@ export default class ListService {
       if(elementsWithCategory.length % environment.totalItemsPerPage){
         totalPages += 1
       }
-
+      retrievePageData.currentPage =  pageNumber
       retrievePageData.totalPages = totalPages
       retrievePageData.total = elementsWithCategory.length;
-      retrievePageData.data = elementsWithCategory.slice(startingIndex, environment.totalItemsPerPage);
+      retrievePageData.data = elementsWithCategory.slice(startingIndex, startingIndex + environment.totalItemsPerPage);
 
       return  of(retrievePageData);
     }
@@ -98,6 +101,35 @@ export default class ListService {
       let apiURL = environment.apiURL;
       let categoriesToURL = categoryArray.join('+').slice(0, -1);
       return this.http.get(`${apiURL}/list?page=${pageNumber}&categories=${categoriesToURL}`);
+    }
+  }
+
+  searchByTerm(searchTerm, pageNumber) : Observable<any>{
+
+    console.log('search term: ', searchTerm )
+    console.log('getData: ', pageNumber )
+    if(isDevMode()){
+      let startingIndex = pageNumber * environment.totalItemsPerPage - (environment.totalItemsPerPage );
+
+      let sortedData = this.filterByTerm(data, searchTerm)
+
+      let totalPages = (sortedData.length / environment.totalItemsPerPage >> 0)
+      if(sortedData.length % environment.totalItemsPerPage){
+        totalPages += 1
+      }
+
+      let retrievePageData = {
+        currentPage: pageNumber,
+        totalPages: totalPages,
+        total: sortedData.length,
+        data: sortedData.slice(startingIndex, startingIndex + environment.totalItemsPerPage)
+      }
+
+      return  of(retrievePageData);
+    }
+    else {
+      let apiURL = environment.apiURL;
+      return this.http.get(`${apiURL}/list?page=${pageNumber}`);
     }
   }
 
@@ -113,4 +145,11 @@ export default class ListService {
 
   }
 
+  private filterByTerm(data, searchTerm): any {
+
+    let elementsWithTerm = _.filter(this.sortByPlanPrice(data), (elem) => {
+      return elem.name.toUpperCase().includes(searchTerm.toUpperCase())
+    })
+    return elementsWithTerm
+  }
 }
